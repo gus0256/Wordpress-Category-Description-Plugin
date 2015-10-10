@@ -1,11 +1,11 @@
 <?php
 /*
 	Plugin Name: An Easy Category Description Widget
-	Plugin URI: http://screw95.com/forums
+	Plugin URI: http://littlebigbyte.com
 	Description: An easy way to display category descriptions in a widget.
 	Version: 1.4
 	Author: Gus
-	Author URI: http://screw95.com/forums
+	Author URI: http://littlebigbyte.com
 	License: GPL2
 */
 
@@ -20,7 +20,7 @@ class lbb_widget_desc extends WP_Widget {
 	function __construct() {
 		parent::__construct(
 			'lbb_widget_desc_widget', // Base ID
-			__( 'LAS Category Widget', 'text_domain' ), // Name
+			__( 'An Easy Category Description Widget', 'text_domain' ), // Name
 			array( 'description' => __( 'Display Category Text Widget', 'text_domain' ), ) // Args
 		);
 	}
