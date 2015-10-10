@@ -37,7 +37,7 @@ class lbb_widget_desc extends WP_Widget {
 		echo $args['before_widget'];
 		if(is_category( $category ) && empty( $instance['category_display'] )){
 			$category_description = category_description();
-			if ( ! empty( $instance['title'] ) && empty( $instance['display_category_title'] ) ) {
+			if ( ! empty( $instance['title'] ) && empty( $instance['display_category_title'] ) && ! empty($category_description) ) {
 				echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
 			}
 			else if( ! empty( $instance['display_category_title'] ) && ! empty($category_description)){
@@ -59,7 +59,7 @@ class lbb_widget_desc extends WP_Widget {
 		}
 		else if(is_tag() && empty( $instance['category_display'] )){
 			$tag_description = tag_description();
-			if ( ! empty( $instance['title'] ) && empty( $instance['display_category_title'] ) ) {
+			if ( ! empty( $instance['title'] ) && empty( $instance['display_category_title'] ) && ! empty($tag_description) ) {
 				echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
 			}
 			else if( ! empty( $instance['display_category_title'] ) && ! empty($tag_description)){
@@ -71,10 +71,10 @@ class lbb_widget_desc extends WP_Widget {
 		}
 		else if(is_tax() && empty( $instance['category_display'] )){
 			$single_term_title = single_term_title("",false);
-			if ( ! empty( $instance['title'] ) && empty( $instance['display_category_title'] ) ) {
+			if ( ! empty( $instance['title'] ) && empty( $instance['display_category_title'] ) && ! empty(term_description()) ) {
 				echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
 			}
-			else if(!empty( $instance['display_category_title'] ) && ! empty($single_term_title)){
+			else if(!empty( $instance['display_category_title'] ) && ! empty(term_description())){
 				echo '<h4 class="widgettitle">'.$single_term_title.'</h4>';
 			}				
 			if(! empty(term_description())){
