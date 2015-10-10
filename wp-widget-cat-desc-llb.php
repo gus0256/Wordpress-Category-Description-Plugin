@@ -49,10 +49,10 @@ class lbb_widget_desc extends WP_Widget {
 		}
 		else if((is_home() || is_front_page()) && ! empty( $instance['home_page_text_area'] ))
 		{
-			if ( ! empty( $instance['title'] ) && empty( $instance['hometitle_display'] ) ) {
+			if ( ! empty( $instance['title'] ) && empty( $instance['home_title_display'] ) ) {
 				echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
 			}
-			else if( ! empty( $instance['title_home'] ) && ! empty($instance['hometitle_display'])){
+			else if( ! empty( $instance['title_home'] ) && ! empty($instance['home_title_display'])){
 				echo "<h4 class=\"widgettitle\">".$instance['title_home']."</h4>";
 			}
 			echo "<div class=\"textwidget\">".wpautop($instance['home_page_text_area'])."</div>";
@@ -97,8 +97,8 @@ class lbb_widget_desc extends WP_Widget {
 		<input class="checkbox" type="checkbox" <?php checked($instance['homepage_display'], 'on'); ?> id="<?php echo $this->get_field_id('homepage_display'); ?>" name="<?php echo $this->get_field_name('homepage_display'); ?>" /> 
 		<label for="<?php echo $this->get_field_id('homepage_display'); ?>">Display Home Page Text</label><br>
 		
-		<input class="checkbox" type="checkbox" <?php checked($instance['hometitle_display'], 'on'); ?> id="<?php echo $this->get_field_id('hometitle_display'); ?>" name="<?php echo $this->get_field_name('hometitle_display'); ?>" /> 
-		<label for="<?php echo $this->get_field_id('hometitle_display'); ?>">Display Home Title</label><br>
+		<input class="checkbox" type="checkbox" <?php checked($instance['home_title_display'], 'on'); ?> id="<?php echo $this->get_field_id('home_title_display'); ?>" name="<?php echo $this->get_field_name('home_title_display'); ?>" /> 
+		<label for="<?php echo $this->get_field_id('home_title_display'); ?>">Display Home Title</label><br>
 		
 		<label for="<?php echo $this->get_field_id('title_home'); ?>"><?php _e('Home Page Title:', 'wp_widget_plugin'); ?></label><br>
 		<input class="widefat" id="<?php echo $this->get_field_id( 'title_home' ); ?>" name="<?php echo $this->get_field_name( 'title_home' ); ?>" type="text" value="<?php echo esc_attr( $title_home ); ?>">
@@ -126,7 +126,7 @@ class lbb_widget_desc extends WP_Widget {
 		$instance['display_category_title'] = ( ! empty( $new_instance['display_category_title'] ) ) ? strip_tags( $new_instance['display_category_title'] ) : '';
 		$instance['category_display'] = ( ! empty( $new_instance['category_display'] ) ) ? strip_tags( $new_instance['category_display'] ) : '';
 		$instance['homepage_display'] = ( ! empty( $new_instance['homepage_display'] ) ) ? strip_tags( $new_instance['homepage_display'] ) : '';
-		$instance['hometitle_display'] = ( ! empty( $new_instance['hometitle_display'] ) ) ? strip_tags( $new_instance['hometitle_display'] ) : '';
+		$instance['home_title_display'] = ( ! empty( $new_instance['home_title_display'] ) ) ? strip_tags( $new_instance['home_title_display'] ) : '';
 		$instance['title_home'] = ( ! empty( $new_instance['title_home'] ) ) ? strip_tags( $new_instance['title_home'] ) : '';
 		
 		//Allow unfiltered_html
