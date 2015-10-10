@@ -57,6 +57,18 @@ class lbb_widget_desc extends WP_Widget {
 			}
 			echo "<div class=\"textwidget\">".wpautop($instance['home_page_text_area'])."</div>";
 		}
+		else if(is_tag() && empty( $instance['category_display'] )){
+			$tag_description = tag_description();
+			if ( ! empty( $instance['title'] ) && empty( $instance['display_category_title'] ) ) {
+				echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
+			}
+			else if( ! empty( $instance['display_category_title'] ) && ! empty($tag_description)){
+				echo "<h4 class=\"widgettitle\">".single_tag_title("",false)."</h4>";
+			}
+			if(! empty($tag_description)){
+				echo "<div class=\"textwidget\">".$tag_description."</div>";
+			}		
+		}
 		else if(is_tax() && empty( $instance['category_display'] )){
 			$single_term_title = single_term_title("",false);
 			if ( ! empty( $instance['title'] ) && empty( $instance['display_category_title'] ) ) {
