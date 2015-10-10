@@ -1,13 +1,14 @@
 <?php
 /*
-	Plugin Name: LAS Category Description Widget
+	Plugin Name: An Easy Category Description Widget
 	Plugin URI: http://screw95.com/forums
-	Description: Easy way to display category descriptions in the sidebar.
+	Description: An easy way to display category descriptions in a widget.
 	Version: 1.4
 	Author: Gus
 	Author URI: http://screw95.com/forums
 	License: GPL2
 */
+
 /**
  * Adds lbb_widget_desc widget.
  */
@@ -36,29 +37,32 @@ class lbb_widget_desc extends WP_Widget {
 		echo $args['before_widget'];
 		if(is_category( $category ) && empty( $instance['category_display'] )){
 			$category_description = category_description();
-			if ( ! empty( $instance['title'] ) && empty( $instance['category_title'] ) ) {
+			if ( ! empty( $instance['title'] ) && empty( $instance['display_category_title'] ) ) {
 				echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
 			}
-			else if( ! empty( $instance['category_title'] ) && ! empty($category_description)){
+			else if( ! empty( $instance['display_category_title'] ) && ! empty($category_description)){
 				echo "<h4 class=\"widgettitle\">".single_cat_title("",false)."</h4>";
 			}
 			if(! empty($category_description)){
 				echo "<div class=\"textwidget\">".$category_description."</div>";
 			}
 		}
-		else if((is_home() || is_front_page()) && ! empty( $instance['homepage_display'] ))
+		else if((is_home() || is_front_page()) && ! empty( $instance['home_page_text_area'] ))
 		{
-			if ( ! empty( $instance['title'] ) && empty( $instance['category_title'] ) ) {
+			if ( ! empty( $instance['title'] ) && empty( $instance['hometitle_display'] ) ) {
 				echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
 			}
-			echo "<div class=\"textwidget\">".wpautop($instance['textarea'])."</div>";
+			else if( ! empty( $instance['title_home'] ) && ! empty($instance['hometitle_display'])){
+				echo "<h4 class=\"widgettitle\">".$instance['title_home']."</h4>";
+			}
+			echo "<div class=\"textwidget\">".wpautop($instance['home_page_text_area'])."</div>";
 		}
 		else if(is_tax() && empty( $instance['category_display'] )){
 			$single_term_title = single_term_title("",false);
-			if ( ! empty( $instance['title'] ) && empty( $instance['category_title'] ) ) {
+			if ( ! empty( $instance['title'] ) && empty( $instance['display_category_title'] ) ) {
 				echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
 			}
-			else if(! empty( $instance['category_title'] ) && ! empty($single_term_title)){
+			else if(!empty( $instance['display_category_title'] ) && ! empty($single_term_title)){
 				echo '<h4 class="widgettitle">'.$single_term_title.'</h4>';
 			}				
 			if(! empty(term_description())){
@@ -77,21 +81,30 @@ class lbb_widget_desc extends WP_Widget {
 	 */
 	public function form( $instance ) {
 		$title = ! empty( $instance['title'] ) ? $instance['title'] : __( '', 'text_domain' );
-		$textarea = ! empty( $instance['textarea'] ) ? $instance['textarea'] : __( '', 'text_domain' );
-		$category_title = ! empty($instance['category_title']) ? $instance['category_title'] : 'off';
-		$category_title = ! empty($instance['homepage_display']) ? $instance['homepage_display'] : 'off';
+		$home_page_text_area = ! empty( $instance['home_page_text_area'] ) ? $instance['home_page_text_area'] : __( '', 'text_domain' );
+		$title_home = ! empty( $instance['title_home'] ) ? $instance['title_home'] : __( '', 'text_domain' );
 		?>
 		<p>
 		<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label> 
 		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
-		<input class="checkbox" type="checkbox" <?php checked($instance['category_title'], 'on'); ?> id="<?php echo $this->get_field_id('category_title'); ?>" name="<?php echo $this->get_field_name('category_title'); ?>" /> 
-		<label for="<?php echo $this->get_field_id('category_title'); ?>">Show Category Titles</label><br>
+		
+		<input class="checkbox" type="checkbox" <?php checked($instance['display_category_title'], 'on'); ?> id="<?php echo $this->get_field_id('display_category_title'); ?>" name="<?php echo $this->get_field_name('display_category_title'); ?>" /> 
+		<label for="<?php echo $this->get_field_id('display_category_title'); ?>">Show Category Titles</label><br>
+		
 		<input class="checkbox" type="checkbox" <?php checked($instance['category_display'], 'on'); ?> id="<?php echo $this->get_field_id('category_display'); ?>" name="<?php echo $this->get_field_name('category_display'); ?>" /> 
 		<label for="<?php echo $this->get_field_id('category_display'); ?>">Disable Category Descriptions</label><br>
+		
 		<input class="checkbox" type="checkbox" <?php checked($instance['homepage_display'], 'on'); ?> id="<?php echo $this->get_field_id('homepage_display'); ?>" name="<?php echo $this->get_field_name('homepage_display'); ?>" /> 
 		<label for="<?php echo $this->get_field_id('homepage_display'); ?>">Display Home Page Text</label><br>
-		<label for="<?php echo $this->get_field_id('textarea'); ?>"><?php _e('Home Page Text:', 'wp_widget_plugin'); ?></label><br>
-		<textarea class="widefat" id="<?php echo $this->get_field_id('textarea'); ?>" name="<?php echo $this->get_field_name('textarea'); ?>"><?php echo $textarea; ?></textarea>
+		
+		<input class="checkbox" type="checkbox" <?php checked($instance['hometitle_display'], 'on'); ?> id="<?php echo $this->get_field_id('hometitle_display'); ?>" name="<?php echo $this->get_field_name('hometitle_display'); ?>" /> 
+		<label for="<?php echo $this->get_field_id('hometitle_display'); ?>">Display Home Title</label><br>
+		
+		<label for="<?php echo $this->get_field_id('title_home'); ?>"><?php _e('Home Page Title:', 'wp_widget_plugin'); ?></label><br>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'title_home' ); ?>" name="<?php echo $this->get_field_name( 'title_home' ); ?>" type="text" value="<?php echo esc_attr( $title_home ); ?>">
+		
+		<label for="<?php echo $this->get_field_id('home_page_text_area'); ?>"><?php _e('Home Page Text:', 'wp_widget_plugin'); ?></label><br>
+		<textarea class="widefat" id="<?php echo $this->get_field_id('home_page_text_area'); ?>" name="<?php echo $this->get_field_name('home_page_text_area'); ?>"><?php echo $home_page_text_area; ?></textarea>
 		</p>
 		<?php 
 	}
@@ -108,16 +121,20 @@ class lbb_widget_desc extends WP_Widget {
 	 */
 	public function update( $new_instance, $old_instance ) {
 		$instance = array();
+		//Update all our instance variables
 		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
-		//Allow unfiltered_html
-		if ( current_user_can('unfiltered_html') )
-			$instance['textarea'] =  $new_instance['textarea'];
-		else
-			$instance['textarea'] = stripslashes( wp_filter_post_kses( addslashes($new_instance['textarea']) ) );
-		
-		$instance['category_title'] = ( ! empty( $new_instance['category_title'] ) ) ? strip_tags( $new_instance['category_title'] ) : '';
+		$instance['display_category_title'] = ( ! empty( $new_instance['display_category_title'] ) ) ? strip_tags( $new_instance['display_category_title'] ) : '';
 		$instance['category_display'] = ( ! empty( $new_instance['category_display'] ) ) ? strip_tags( $new_instance['category_display'] ) : '';
 		$instance['homepage_display'] = ( ! empty( $new_instance['homepage_display'] ) ) ? strip_tags( $new_instance['homepage_display'] ) : '';
+		$instance['hometitle_display'] = ( ! empty( $new_instance['hometitle_display'] ) ) ? strip_tags( $new_instance['hometitle_display'] ) : '';
+		$instance['title_home'] = ( ! empty( $new_instance['title_home'] ) ) ? strip_tags( $new_instance['title_home'] ) : '';
+		
+		//Allow unfiltered_html
+		if ( current_user_can('unfiltered_html') )
+			$instance['home_page_text_area'] =  $new_instance['home_page_text_area'];
+		else
+			$instance['home_page_text_area'] = stripslashes( wp_filter_post_kses( addslashes($new_instance['home_page_text_area']) ) );
+		
 		return $instance;
 	}
 
