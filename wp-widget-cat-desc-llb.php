@@ -1,11 +1,11 @@
 <?php
 /*
 	Plugin Name: LAS Category Description Widget
-	Plugin URI: http://lazyassstoner.com
+	Plugin URI: http://screw95.com/forums
 	Description: Easy way to display category descriptions in the sidebar.
-	Version: 1.3
+	Version: 1.4
 	Author: Gus
-	Author URI: http://lazyassstoner.com
+	Author URI: http://screw95.com/forums
 	License: GPL2
 */
 /**
@@ -40,14 +40,10 @@ class lbb_widget_desc extends WP_Widget {
 				echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
 			}
 			else if( ! empty( $instance['category_title'] ) && ! empty($category_description)){
-				echo "<h4 class=\"widgettitle\">";
-				echo single_cat_title();
-				echo "</h2>";
+				echo "<h4 class=\"widgettitle\">".single_cat_title("",false)."</h4>";
 			}
 			if(! empty($category_description)){
-				echo "<div class=\"textwidget\">";
-				echo $category_description;
-				echo "</div>";
+				echo "<div class=\"textwidget\">".$category_description."</div>";
 			}
 		}
 		else if((is_home() || is_front_page()) && ! empty( $instance['homepage_display'] ))
@@ -55,9 +51,19 @@ class lbb_widget_desc extends WP_Widget {
 			if ( ! empty( $instance['title'] ) && empty( $instance['category_title'] ) ) {
 				echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
 			}
-			echo "<div class=\"textwidget\">";
-			echo wpautop($instance['textarea']);
-			echo "</div>";
+			echo "<div class=\"textwidget\">".wpautop($instance['textarea'])."</div>";
+		}
+		else if(is_tax() && empty( $instance['category_display'] )){
+			$single_term_title = single_term_title("",false);
+			if ( ! empty( $instance['title'] ) && empty( $instance['category_title'] ) ) {
+				echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
+			}
+			else if(! empty( $instance['category_title'] ) && ! empty($single_term_title)){
+				echo '<h4 class="widgettitle">'.$single_term_title.'</h4>';
+			}				
+			if(! empty(term_description())){
+				echo '<div class="textwidget">'.term_description().'</div>';
+			}
 		}
 		echo $args['after_widget'];
 	}
@@ -79,7 +85,7 @@ class lbb_widget_desc extends WP_Widget {
 		<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label> 
 		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
 		<input class="checkbox" type="checkbox" <?php checked($instance['category_title'], 'on'); ?> id="<?php echo $this->get_field_id('category_title'); ?>" name="<?php echo $this->get_field_name('category_title'); ?>" /> 
-		<label for="<?php echo $this->get_field_id('category_title'); ?>">Show Category Title</label><br>
+		<label for="<?php echo $this->get_field_id('category_title'); ?>">Show Category Titles</label><br>
 		<input class="checkbox" type="checkbox" <?php checked($instance['category_display'], 'on'); ?> id="<?php echo $this->get_field_id('category_display'); ?>" name="<?php echo $this->get_field_name('category_display'); ?>" /> 
 		<label for="<?php echo $this->get_field_id('category_display'); ?>">Disable Category Descriptions</label><br>
 		<input class="checkbox" type="checkbox" <?php checked($instance['homepage_display'], 'on'); ?> id="<?php echo $this->get_field_id('homepage_display'); ?>" name="<?php echo $this->get_field_name('homepage_display'); ?>" /> 
